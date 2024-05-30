@@ -225,8 +225,8 @@ function weatherHandler() {
                 console.log(data);
                 const condition = data.weather[0].description;
                 const location = data.name;
-                let temperature = data.main.temp;
-
+                let temperature = undefined;
+                
                 let celsiusText = `The weather is ${condition} in ${location} and it's ${temperature.toFixed(1)}°C outside.`;
                 let fahrText = `The weather is ${condition} in ${location} and it's ${celsiusToFahr(temperature).toFixed(1)}°F outside.`;
 
@@ -241,7 +241,10 @@ function weatherHandler() {
                         document.querySelector("p#weather").innerHTML = fahrText;
                     }
                 });
+            }).catch(err => {
+                document.querySelector("p#weather").innerHTML = "Unable to get thee weather info."
             });
+
     });
 }
 
