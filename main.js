@@ -1,4 +1,7 @@
 // Global
+const weatherAPIkey = '428bcda7b6a319576c7ba6836eb38c82';
+let weatherAPIURL = `https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid=${weatherAPIkey}&units=metric`;
+
 const galleryImages = [
     {
         src: "./assets/gallery/image1.jpg",
@@ -21,40 +24,40 @@ const galleryImages = [
 
 const products = [
     {
-      title: "AstroFiction",
-      author: "John Doe",
-      price: 49.9,
-      image: "./assets/products/img6.png"
+        title: "AstroFiction",
+        author: "John Doe",
+        price: 49.9,
+        image: "./assets/products/img6.png"
     },
     {
-      title: "Space Odissey",
-      author: "Marie Anne",
-      price: 35,
-      image: "./assets/products/img1.png"
+        title: "Space Odissey",
+        author: "Marie Anne",
+        price: 35,
+        image: "./assets/products/img1.png"
     },
     {
-      title: "Doomed City",
-      author: "Jason Cobert",
-      price: 0,
-      image: "./assets/products/img2.png"
+        title: "Doomed City",
+        author: "Jason Cobert",
+        price: 0,
+        image: "./assets/products/img2.png"
     },
     {
-      title: "Black Dog",
-      author: "John Doe",
-      price: 85.35,
-      image: "./assets/products/img3.png"
+        title: "Black Dog",
+        author: "John Doe",
+        price: 85.35,
+        image: "./assets/products/img3.png"
     },
     {
-      title: "My Little Robot",
-      author: "Pedro Paulo",
-      price: 0,
-      image: "./assets/products/img5.png"
+        title: "My Little Robot",
+        author: "Pedro Paulo",
+        price: 0,
+        image: "./assets/products/img5.png"
     },
     {
-      title: "Garden Girl",
-      author: "Ankit Patel",
-      price: 45,
-      image: "./assets/products/img4.png"
+        title: "Garden Girl",
+        author: "Ankit Patel",
+        price: 45,
+        image: "./assets/products/img4.png"
     }
 ];
 
@@ -76,26 +79,15 @@ function celsiusToFahr(temp) {
 
 //Greeting Section
 function greetingHandler() {
-    const greetingText = "Good Morning";
-    const weatherCondition = "Sunny";
-    const userLocation = "New York";
-    let temperature = 35.8763;
-    let celsiusText = `The weather is ${weatherCondition} in ${userLocation} and it's ${temperature.toFixed(1)}°C outside.`;
-    let fahrText = `The weather is ${weatherCondition} in ${userLocation} and it's ${celsiusToFahr(temperature).toFixed(1)}°F outside.`;
+
+    const currentHour = new Date().getHours();
+
+    if (currentHour < 12) greetingText = "Good Morning!";
+    else if (currentHour < 16) greetingText = "Good Afternoon!";
+    else if (currentHour < 24) greetingText = "Good Evening!";
+    else greetingText = "Welcome!";
 
     document.querySelector("#greeting").innerHTML = greetingText;
-    document.querySelector("p#weather").innerHTML = celsiusText;
-
-    document.querySelector(".weather-group").addEventListener("click", function (e) {
-
-        if (e.target.id === "celsius") {
-            document.querySelector("p#weather").innerHTML = celsiusText;
-        }
-        else if (e.target.id) {
-            document.querySelector("p#weather").innerHTML = fahrText;
-        }
-    });
-
 }
 
 // Clock Section
@@ -109,7 +101,7 @@ function clockHandler() {
 }
 
 // Gallery Section
-function galleryHandler(){
+function galleryHandler() {
     let mainImage = document.querySelector("#gallery > img");
     let thumbnails = document.querySelector("#gallery .thumbnails");
 
@@ -137,15 +129,10 @@ function galleryHandler(){
     });
 }
 
-function productHandler(){
+function productHandler() {
 
-    let freeProducts = products.filter(function(obj){
-        return !obj.price || obj.price <= 0;
-    });
-
-    let paidProducts = products.filter(function(obj){
-        return obj.price > 0;
-    });
+    let freeProducts = products.filter(obj => !obj.price || obj.price <= 0);
+    let paidProducts = products.filter(obj => obj.price > 0);
 
     //Initial load
     populateProducts(products);
@@ -153,9 +140,9 @@ function productHandler(){
     document.querySelector(".products-filter label[for=all] span.product-amount").textContent = products.length;
     document.querySelector(".products-filter label[for=paid] span.product-amount").textContent = paidProducts.length;
     document.querySelector(".products-filter label[for=free] span.product-amount").textContent = freeProducts.length;
-    
+
     let productsFilter = document.querySelector(".products-filter");
-    productsFilter.addEventListener("click", function(e){
+    productsFilter.addEventListener("click", function (e) {
         console.log(e.target);
         if (e.target.id === "paid") populateProducts(freeProducts);
         else if (e.target.id === "free") populateProducts(paidProducts);
@@ -165,57 +152,97 @@ function productHandler(){
 
 }
 
-function populateProducts(productList){
+function populateProducts(productList) {
 
     let productsSection = document.querySelector(".products-area");
     productsSection.textContent = "";
 
     // Run loop over each product to create HTML element ("product-item")
-    productList.forEach(function(product, index){
+    productList.forEach(function (product, index) {
 
-            //Create HTML element for individual product
-            let prodElm = document.createElement("div");
-            prodElm.classList.add("product-item");
-            productsSection.append(prodElm);
-    
-            //Create image HTML element 
-            let prodImg = document.createElement("img");
-            prodImg.src = product.image;
-            prodImg.alt = "Image for " + product.title;
-            prodElm.append(prodImg);
-    
-            //Create HTML elementt for product deatils
-            let prodDetails = document.createElement("div");
-            prodDetails.classList.add("product-details");
-            prodElm.append(prodDetails);
-    
-            //title
-            let prodTitle = document.createElement("h3");
-            prodTitle.classList.add("product-title");
-            prodTitle.innerHTML = product.title;
-            prodDetails.append(prodTitle);
-    
-            //Author
-            let prodAuthor = document.createElement("p");
-            prodAuthor.classList.add("product-author")
-            prodAuthor.innerText = product.author;
-            prodDetails.append(prodAuthor);
-    
-            //Price Title
-            let priceTitle = document.createElement("p");
-            priceTitle.classList.add("price-title");
-            priceTitle.innerText = "Price";
-            prodDetails.append(priceTitle);
-    
-            //Product Price
-            let prodPrice = document.createElement("p");
-            prodPrice.classList.add("product-price");
-            prodPrice.innerText =  product.price > 0 ? "$" + product.price.toFixed(2) : "Free";
-            prodDetails.append(prodPrice);
-    
-    
+        //Create HTML element for individual product
+        let prodElm = document.createElement("div");
+        prodElm.classList.add("product-item");
+        productsSection.append(prodElm);
+
+        //Create image HTML element 
+        let prodImg = document.createElement("img");
+        prodImg.src = product.image;
+        prodImg.alt = "Image for " + product.title;
+        prodElm.append(prodImg);
+
+        //Create HTML elementt for product deatils
+        let prodDetails = document.createElement("div");
+        prodDetails.classList.add("product-details");
+        prodElm.append(prodDetails);
+
+        //title
+        let prodTitle = document.createElement("h3");
+        prodTitle.classList.add("product-title");
+        prodTitle.innerHTML = product.title;
+        prodDetails.append(prodTitle);
+
+        //Author
+        let prodAuthor = document.createElement("p");
+        prodAuthor.classList.add("product-author")
+        prodAuthor.innerText = product.author;
+        prodDetails.append(prodAuthor);
+
+        //Price Title
+        let priceTitle = document.createElement("p");
+        priceTitle.classList.add("price-title");
+        priceTitle.innerText = "Price";
+        prodDetails.append(priceTitle);
+
+        //Product Price
+        let prodPrice = document.createElement("p");
+        prodPrice.classList.add("product-price");
+        prodPrice.innerText = product.price > 0 ? "$" + product.price.toFixed(2) : "Free";
+        prodDetails.append(prodPrice);
+
+
     });
 
+}
+
+function footerHandler() {
+    let currentYear = new Date().getFullYear();
+    document.querySelector("footer").textContent = `${currentYear} - All rights reserved`;
+}
+
+function weatherHandler() {
+
+    navigator.geolocation.getCurrentPosition(position => {
+        let latitude = position.coords.latitude;
+        let longitude = position.coords.longitude;
+        let url = weatherAPIURL
+            .replace("{lat}", latitude)
+            .replace("{lon}", longitude)
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                const condition = data.weather[0].description;
+                const location = data.name;
+                let temperature = data.main.temp;
+
+                let celsiusText = `The weather is ${condition} in ${location} and it's ${temperature.toFixed(1)}°C outside.`;
+                let fahrText = `The weather is ${condition} in ${location} and it's ${celsiusToFahr(temperature).toFixed(1)}°F outside.`;
+
+                document.querySelector("p#weather").innerHTML = celsiusText;
+
+                //Temp switch
+                document.querySelector(".weather-group").addEventListener("click", function (e) {
+                    if (e.target.id === "celsius") {
+                        document.querySelector("p#weather").innerHTML = celsiusText;
+                    }
+                    else if (e.target.id) {
+                        document.querySelector("p#weather").innerHTML = fahrText;
+                    }
+                });
+            });
+    });
 }
 
 
@@ -224,4 +251,6 @@ menuHandler();
 greetingHandler();
 clockHandler();
 galleryHandler();
-productHandler();
+productHandler()
+weatherHandler();
+footerHandler();
